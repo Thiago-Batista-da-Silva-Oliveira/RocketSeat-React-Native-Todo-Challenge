@@ -1,9 +1,10 @@
 import styled from "styled-components/native";
 
 interface ITextProps {
-  color: "BLUE" | "PURPLE" | "GRAY_400";
+  color: "BLUE" | "PURPLE" | "GRAY_400" | "GRAY_300" | "GRAY_200" | "GRAY_100";
   fontWeigth?: "REGULAR" | "BOLD";
   fontSize?: "SM" | "MD" | "LG";
+  textDecoration?: "line-through" | "none";
 }
 
 const TasksContainer = styled.View`
@@ -51,8 +52,6 @@ const TasksRelationContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  border-bottom-width: 1px;
-  border-bottom-color: ${({ theme }) => theme.COLORS.GRAY_400};
 `;
 
 const TaskRelationContent = styled.View`
@@ -70,6 +69,7 @@ const CustomText = styled.Text<ITextProps>`
   font-style: normal;
   font-weight: ${({ fontWeigth }) =>
     fontWeigth === "BOLD" ? "bold" : "normal"};
+  text-decoration-line: ${({ textDecoration }) => textDecoration || "none"};
 `;
 
 const NumberOfTasksCircle = styled.View`
@@ -89,6 +89,24 @@ const EmptyTasksContainer = styled.View`
   justify-content: center;
   gap: 10px;
   height: 400px;
+  border-top-width: 1px;
+  border-top-color: ${({ theme }) => theme.COLORS.GRAY_400};
+`;
+
+const TaskContainer = styled.View`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 8px 12px 12px;
+  align-items: center;
+  gap: 8px;
+  align-self: stretch;
+  border-radius: 8px;
+  border-width: 1px;
+  border-color: ${({ theme }) => theme.COLORS.GRAY_400};
+  background-color: ${({ theme }) => theme.COLORS.GRAY_500};
+  margin-top: 8px;
 `;
 
 export {
@@ -101,4 +119,5 @@ export {
   CustomText,
   NumberOfTasksCircle,
   EmptyTasksContainer,
+  TaskContainer,
 };

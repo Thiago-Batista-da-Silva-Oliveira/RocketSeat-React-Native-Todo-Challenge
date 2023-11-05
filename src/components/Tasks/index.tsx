@@ -1,4 +1,11 @@
-import { FlatList, Image, Text } from "react-native";
+import {
+  FlatList,
+  Image,
+  NativeSyntheticEvent,
+  Text,
+  TextInputChangeEventData,
+  TouchableOpacity,
+} from "react-native";
 import {
   AddTaskButton,
   AddTaskContainer,
@@ -9,6 +16,7 @@ import {
   CustomText,
   TasksContainer,
   TasksRelationContainer,
+  TaskContainer,
 } from "./styles";
 import { useState } from "react";
 
@@ -20,11 +28,42 @@ interface ITasks {
 
 export const Tasks = () => {
   const [tasks, setTasks] = useState<ITasks[]>([]);
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const handleTaskInputChange = (
+    text: NativeSyntheticEvent<TextInputChangeEventData>
+  ) => {
+    setNewTaskTitle(text.nativeEvent.text);
+  };
+  const handleAddTask = () => {
+    const data = {
+      id: String(new Date().getTime()),
+      title: newTaskTitle,
+      done: false,
+    };
+    setTasks((prev) => [...prev, data]);
+    setNewTaskTitle("");
+  };
+
+  const handleRemoveTask = (id: string) => {
+    setTasks((prev) => prev.filter((task) => task.id !== id));
+  };
+
+  const handleToggleTaskDone = (id: string) => {
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === id ? { ...task, done: !task.done } : task
+      )
+    );
+  };
   return (
     <TasksContainer>
       <AddTaskContainer>
-        <TaskInput placeholder="Adicione uma nova tarefa" />
-        <AddTaskButton>
+        <TaskInput
+          value={newTaskTitle}
+          onChange={(text) => handleTaskInputChange(text)}
+          placeholder="Adicione uma nova tarefa"
+        />
+        <AddTaskButton onPress={() => handleAddTask()}>
           <Image source={require("../../assets/plus.png")} />
         </AddTaskButton>
       </AddTaskContainer>
@@ -32,21 +71,47 @@ export const Tasks = () => {
         <TaskRelationContent>
           <CustomText color="BLUE">Criadas</CustomText>
           <NumberOfTasksCircle>
-            <Text style={{ color: "#FFF" }}>0</Text>
+            <Text style={{ color: "#FFF" }}>{tasks.length}</Text>
           </NumberOfTasksCircle>
         </TaskRelationContent>
 
         <TaskRelationContent>
           <CustomText color="PURPLE">Concluídas</CustomText>
           <NumberOfTasksCircle>
-            <Text style={{ color: "#FFF" }}>0</Text>
+            <Text style={{ color: "#FFF" }}>
+              {tasks.filter((data) => data.done).length}
+            </Text>
           </NumberOfTasksCircle>
         </TaskRelationContent>
       </TasksRelationContainer>
       <FlatList
         data={tasks}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <Text>{item.title}</Text>}
+        renderItem={({ item }) => (
+          <TaskContainer>
+            {item.done ? (
+              <TouchableOpacity onPress={() => handleToggleTaskDone(item.id)}>
+                <Image source={require("../../assets/check.png")} />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={() => handleToggleTaskDone(item.id)}>
+                <Image source={require("../../assets/circle.png")} />
+              </TouchableOpacity>
+            )}
+            <CustomText
+              textDecoration={item.done ? "line-through" : "none"}
+              color={item.done ? "GRAY_300" : "GRAY_100"}
+              fontSize="MD"
+              fontWeigth="REGULAR"
+              style={{flex: 1}}
+            >
+              {item.title}
+            </CustomText>
+            <TouchableOpacity onPress={() => handleRemoveTask(item.id)}>
+              <Image source={require("../../assets/trash.png")} />
+            </TouchableOpacity>
+          </TaskContainer>
+        )}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={() => (
           <EmptyTasksContainer>
