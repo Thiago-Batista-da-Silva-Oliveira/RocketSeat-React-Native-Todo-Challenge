@@ -59,6 +59,7 @@ export const Tasks = () => {
     <TasksContainer>
       <AddTaskContainer>
         <TaskInput
+          placeholderTextColor="#808080" 
           value={newTaskTitle}
           onChange={(text) => handleTaskInputChange(text)}
           placeholder="Adicione uma nova tarefa"
@@ -71,16 +72,16 @@ export const Tasks = () => {
         <TaskRelationContent>
           <CustomText color="BLUE">Criadas</CustomText>
           <NumberOfTasksCircle>
-            <Text style={{ color: "#FFF" }}>{tasks.length}</Text>
+            <CustomText color="GRAY_200">{tasks.length}</CustomText>
           </NumberOfTasksCircle>
         </TaskRelationContent>
 
         <TaskRelationContent>
           <CustomText color="PURPLE">Concluídas</CustomText>
           <NumberOfTasksCircle>
-            <Text style={{ color: "#FFF" }}>
+            <CustomText color="GRAY_200">
               {tasks.filter((data) => data.done).length}
-            </Text>
+            </CustomText>
           </NumberOfTasksCircle>
         </TaskRelationContent>
       </TasksRelationContainer>
